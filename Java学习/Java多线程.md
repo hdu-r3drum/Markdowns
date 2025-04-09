@@ -333,7 +333,7 @@ CPU 通过监听总线，检测其他核心对 `volatile` 变量的修改，强�
 
 通过 `volatile` 变量控制线程退出：
 
-```
+```java
 public class WorkerThread extends Thread {
     private volatile boolean running = true;
 
@@ -354,7 +354,7 @@ public class WorkerThread extends Thread {
 
 单例模式中避免指令重排序导致对象未完全初始化：
 
-```
+```java
 public class Singleton {
     private static volatile Singleton instance;
 
@@ -394,7 +394,7 @@ JVM 可能将对象初始化过程重排序为：分配内存 → 返回引用 �
 
 如 `i++` 实际上是 `读取 → 修改 → 写入` 的复合操作，需用 `AtomicInteger` 或锁：
 
-```
+```java
 private volatile int count = 0;
 
 // 错误：线程不安全
@@ -413,7 +413,7 @@ public void safeIncrement() {
 
 当操作涉及多个共享变量时，仍需使用锁保证原子性：
 
-```
+```java
 private volatile int x = 0;
 private volatile int y = 0;
 
