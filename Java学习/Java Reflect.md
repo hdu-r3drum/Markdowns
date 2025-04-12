@@ -170,3 +170,80 @@ class SampleClass {
 - **异常处理**：上述方法可能抛出 `NoSuchFieldException`、`IllegalAccessException` 等异常，需要适当处理。
 - **性能影响**：反射操作通常比直接访问字段慢，频繁使用可能影响性能。
 - **安全性**：修改私有字段的可访问性可能违反封装原则，需谨慎使用。
+
+
+
+# Method获取和调用
+
+## 获取
+
+在 Java 中，可以使用反射机制通过 Class 类提供的 API 获取一个类的所有方法，包括：
+
+​	•	该类**声明的所有方法**（不包括父类继承的方法）
+
+​	•	该类**可访问的所有公共方法**（包括从父类或接口继承而来的）
+
+
+
+**🛠 获取方法的方式：**
+
+
+
+**✅ 获取所有公共方法（包括继承的）**
+
+```java
+Method[] methods = clazz.getMethods();
+```
+
+**✅ 获取类中声明的所有方法（不包括继承的）**
+
+```java
+Method[] declaredMethods = clazz.getDeclaredMethods();
+```
+
+## 调用
+
+要调用通过反射获得的方法，需要使用 Method.invoke(Object obj, Object... args) 方法。
+
+
+
+**🧪 通用调用步骤：**
+
+1. 通过 Class 对象获取 Method 对象；
+
+	2.	如果方法是私有的，要调用 setAccessible(true)；
+	2.	使用 invoke() 方法传入实例对象和参数进行调用。
+
+```java
+import java.lang.reflect.Method;
+
+public class MethodInvokeExample {
+    public static void main(String[] args) throws Exception {
+        // 创建一个对象
+        SampleClass obj = new SampleClass();
+
+        // 获取 Class 对象
+        Class<?> clazz = obj.getClass();
+
+        // 调用 public 方法
+        Method publicMethod = clazz.getMethod("sayHello", String.class);
+        publicMethod.invoke(obj, "Alice");
+
+        // 调用 private 方法
+        Method privateMethod = clazz.getDeclaredMethod("secret", int.class);
+        privateMethod.setAccessible(true);  // 访问私有方法必须设置
+        privateMethod.invoke(obj, 42);
+    }
+}
+
+class SampleClass {
+    public void sayHello(String name) {
+        System.out.println("Hello, " + name);
+    }
+
+    private void secret(int code) {
+        System.out.println("Secret code is: " + code);
+    }
+}
+```
+
